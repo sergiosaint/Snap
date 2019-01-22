@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Snap;
+using Snap.Utils;
 
 namespace UnitTests {
   [TestFixture]

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Snap {
+namespace Snap.Entities {
 
   public class CardDeck {
     public List<Card> Cards { get; }

@@ -1,4 +1,6 @@
-﻿namespace Snap {
+﻿using Snap.Utils;
+
+namespace Snap.Entities {
 
   public class Card {
     public Suit Suit { get; }
@@ -10,7 +12,7 @@
     }
 
     public override string ToString() {
-      return $"{Utils.GetEnumDescription( Rank )}{Utils.GetEnumDescription( Suit )}";
+      return $"{Rank.GetEnumDescription()}{Suit.GetEnumDescription()}";
     }
   }
 

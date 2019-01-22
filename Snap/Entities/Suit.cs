@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Snap {
+namespace Snap.Entities {
 
   public enum Suit {
     [Description( "C" )]

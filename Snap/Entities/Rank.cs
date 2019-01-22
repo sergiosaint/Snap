@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Snap {
+namespace Snap.Entities {
   public enum Rank {
     [Description( "2" )]
     Two,

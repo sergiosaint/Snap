@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using Snap;
+using Snap.Entities;
 
 namespace UnitTests {
   [TestFixture]

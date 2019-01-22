@@ -2,8 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-
-namespace Snap {
+namespace Snap.Utils {
   public static class Utils {
 
     /// <summary>

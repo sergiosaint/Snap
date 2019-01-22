@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Snap.Entities;
 
 namespace Snap {
 
@@ -23,7 +24,7 @@ namespace Snap {
       CardDeck = new CardDeck();
       CardDeck.Shuffle();
 
-      allCards = Utils.GetNumOfAllCards( NumOfPlayers );
+      allCards = Utils.Utils.GetNumOfAllCards( NumOfPlayers );
     }
 
     public void Deal() {
@@ -53,7 +54,7 @@ namespace Snap {
           if ( playerCards.Any() ) {
             var currentCard = playerCards.Pop();
             Pile.Push( currentCard );
-            Console.WriteLine( $"Player {i + 1} added card {currentCard.ToString()} to the pile.");
+            Console.WriteLine( $"Player {i + 1} added card {currentCard} to the pile." );
             if ( previousCard != null && previousCard.Rank == currentCard.Rank ) {
               Snap( previousPlayer, i );
               if ( FindWinner() != -1 ) {
@@ -65,9 +66,18 @@ namespace Snap {
             previousCard = currentCard;
           }
         }
+
+        if ( PlayersCards.All( stack => !stack.Any() ) )
+        {
+          Console.WriteLine( $"No more Cards Available" );
+          break;
+        }
       }
 
-      Console.WriteLine( $"Player{FindWinner() + 1} Won!" );
+      if (FindWinner() != -1)
+      {
+        Console.WriteLine($"Player{FindWinner() + 1} Won!");
+      }
     }
 
     public void Snap( int player1Index, int player2Index ) {
