@@ -15,5 +15,4 @@ namespace Snap.Entities {
       return $"{Rank.GetEnumDescription()}{Suit.GetEnumDescription()}";
     }
   }
-
 }

@@ -15,7 +15,7 @@ namespace UnitTests {
       var simulator = new Simulator( numOfPlayers );
       simulator.Deal();
 
-      foreach (var playerCards in simulator.PlayersCards )
+      foreach (var playerCards in simulator.PlayerCards )
       {
         Assert.That( playerCards.Count, Is.EqualTo( expectedNumOfCardsPerPlayer ) );
       }
