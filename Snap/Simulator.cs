@@ -103,7 +103,7 @@ namespace Snap {
     public void Snap( int player1Index, int player2Index ) {
       CardSet winningStack;
       Random rng = new Random();
-      var winner = rng.Next( 0, 1 );//Good candidate to be injected in order to be testable
+      var winner = rng.Next( 0, 2 );//Good candidate to be injected in order to be testable
       if ( winner == 0 ) {
         Console.WriteLine( $"Player {player1Index + 1} Snaps the cards!" );
         winningStack = PlayerCards.ElementAt( player1Index );
