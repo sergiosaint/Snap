@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 
-namespace Snap.Entities {
-  public enum Rank {
+namespace Snap.Entities
+{
+  public enum Rank
+  {
     [Description( "2" )]
     Two,
     [Description( "3" )]
@@ -29,5 +31,4 @@ namespace Snap.Entities {
     [Description( "A" )]
     Ace
   }
-
 }

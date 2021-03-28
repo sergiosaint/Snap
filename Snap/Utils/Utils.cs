@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Snap.Utils {
-  public static class Utils {
+namespace Snap.Utils
+{
+  public static class Utils
+  {
 
     /// <summary>
     /// Retrieves the enum item value description
@@ -13,15 +15,18 @@ namespace Snap.Utils {
     /// </remarks>
     /// <param name="value"> An enum item value </param>
     /// <returns>what was set in the description attribute for the given enum item value</returns>
-    public static string GetEnumDescription( this Enum value ) {
+    public static string GetEnumDescription( this Enum value )
+    {
       Type type = value.GetType();
       string name = Enum.GetName( type, value );
-      if ( string.IsNullOrEmpty( name ) ) {
+      if ( string.IsNullOrEmpty( name ) )
+      {
         return null;
       }
 
       FieldInfo field = type.GetField( name );
-      if ( field == null ) {
+      if ( field == null )
+      {
         return null;
       }
 
@@ -29,7 +34,7 @@ namespace Snap.Utils {
       return attr == null ? name : attr.Description;
     }
 
-    public static int GetNumOfAllCards(int numOfPlayers)
+    public static int GetNumberOfCardsToUseInGame( int numOfPlayers )
     {
       return 52 - ( 52 % numOfPlayers );
     }

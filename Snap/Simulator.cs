@@ -1,120 +1,128 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Snap.Components.SnapDeciders;
+using Snap.Components.WinnerDeciders;
 using Snap.Entities;
 
-namespace Snap {
+namespace Snap
+{
+  public class Simulator
+  {
+    private readonly int _numberOfPlayers;
+    private readonly int _numberOfCardsUsedInGame;
+    private readonly IWinnerDecider _winnerDecider;
+    private readonly ISnapDecider _snapDecider;
 
-  public class Simulator {
-    private int NumOfPlayers { get; }
-    private int allCards;
+    public CardSet CentralPile { get; }
+    public Dictionary<int, CardSet> PlayerCardsByPlayerIndex { get; }
+    public CardSet CardDeck { get; } // To proper test this should be injected too
 
-    public Stack<Card> Pile { get; }
-    public List<CardSet> PlayerCards { get; }
-    public CardSet CardDeck { get; }
+    public Simulator( int numberOfPlayers, IWinnerDecider winnerDecider, ISnapDecider snapDecider )
+    {
 
-    public Simulator( int numOfPlayers ) {
-      NumOfPlayers = numOfPlayers;
-      Pile = new Stack<Card>();
-      PlayerCards = new List<CardSet>();
-      for ( int i = 0; i < NumOfPlayers; i++ ) {
-        PlayerCards.Add( new CardSet() );
+      if ( numberOfPlayers < 2 || numberOfPlayers > 52 )
+      {
+        throw new ArgumentOutOfRangeException( nameof( numberOfPlayers ), $"The simulator expects a number of players between 2 and 52, {numberOfPlayers} was given instead." );
+      }
+
+      _numberOfPlayers = numberOfPlayers;
+      _winnerDecider = winnerDecider;
+      _snapDecider = snapDecider;
+
+      CentralPile = new CardSet();
+      PlayerCardsByPlayerIndex = new Dictionary<int, CardSet>();
+      for ( int playerIndex = 0; playerIndex < _numberOfPlayers; playerIndex++ )
+      {
+        PlayerCardsByPlayerIndex.Add( playerIndex, new CardSet() );
       }
 
       CardDeck = new CardSet();
       CardDeck.InitializeWithFullDeck();
       CardDeck.Shuffle();
 
-      allCards = Utils.Utils.GetNumOfAllCards( NumOfPlayers );
+      _numberOfCardsUsedInGame = Utils.Utils.GetNumberOfCardsToUseInGame( _numberOfPlayers );
     }
 
-    public void Deal() {
-      while ( CardDeck.Cards.Count >= NumOfPlayers ) {
-        for ( int i = 0; i < NumOfPlayers; i++ ) {
-          PlayerCards.ElementAt( i ).AddToTop( CardDeck.TakeFromBottom() );
+    public void Deal()
+    {
+      while ( CardDeck.Cards.Count >= _numberOfPlayers )
+      {
+        foreach ( var playerCards in PlayerCardsByPlayerIndex.Values )
+        {
+          playerCards.AddToTop( CardDeck.TakeFromBottom() );
         }
       }
     }
 
-    private bool MoreThanOnePlayerHasCards() {
-      int PlayersWithCards = 0;
-      for ( int i = 0; i < NumOfPlayers; i++ ) {
-        if ( PlayerCards.ElementAt( i ).Any() ) {
-          PlayersWithCards++;
-        }
-      }
-
-      return PlayersWithCards > 1;
+    private bool MoreThanOnePlayerHasCards()
+    {
+      return PlayerCardsByPlayerIndex.Values.Count( c => c.Cards.Any() ) > 1;
     }
 
-    private int FindWinner() {
-      for ( int i = 0; i < NumOfPlayers; i++ ) {
-        if ( PlayerCards.ElementAt( i ).Count() == allCards ) {
-          return i;
-        }
+    private int FindWinnerIndex()
+    {
+      var winnerKvp = PlayerCardsByPlayerIndex.FirstOrDefault( kvp => kvp.Value.Cards.Count == _numberOfCardsUsedInGame );
+
+      if ( winnerKvp.Equals( default( KeyValuePair<int, CardSet> ) ) )
+      {
+        return -1;
       }
 
-      return -1;
+      return winnerKvp.Key;
     }
 
-    public void Simulate() {
-      Card previousCard = null;
-      int previousPlayer = -1;
-      int currentPlayer = 0;
-      while ( MoreThanOnePlayerHasCards() ) {
+    public void Simulate()
+    {
+      int currentPlayerIndex = 0;
+      while ( MoreThanOnePlayerHasCards() )
+      {
+        var currentPlayerCards = PlayerCardsByPlayerIndex[currentPlayerIndex];
+        if ( currentPlayerCards.Any() )
+        {
+          var currentCard = currentPlayerCards.TakeFromTop();
+          CentralPile.AddToTop( currentCard );
+          Console.WriteLine( $"Player {currentPlayerIndex + 1} added card {currentCard} to the pile." );
 
-          var playerCards = PlayerCards.ElementAt( currentPlayer );
-          if ( playerCards.Any() ) {
-            var currentCard = playerCards.TakeFromTop();
-            Pile.Push( currentCard );
-            Console.WriteLine( $"Player {currentPlayer + 1} added card {currentCard} to the pile." );
-            if ( previousCard != null && previousCard.Rank == currentCard.Rank ) {
-              Snap( previousPlayer, currentPlayer );
-              if ( FindWinner() != -1 ) {
-                break;
-              }
-            }
-
-            previousPlayer = currentPlayer;
-            previousCard = currentCard;
-          }
-
-          currentPlayer++;
-          if (currentPlayer >= NumOfPlayers)
+          if ( _snapDecider.IsSnap( CentralPile ) )
           {
-            currentPlayer = 0;
-          }
+            var winnerIndex = _winnerDecider.GetWinnerIndex( currentPlayerIndex, _numberOfPlayers );
+            Snap( winnerIndex );
 
-        if ( PlayerCards.All( stack => !stack.Any() ) ) {
-          Console.WriteLine( $"No more Cards Available" );
+            if ( FindWinnerIndex() != -1 )
+            {
+              break;
+            }
+          }
+        }
+
+        currentPlayerIndex++;
+        if ( currentPlayerIndex >= _numberOfPlayers )
+        {
+          currentPlayerIndex = 0;
+        }
+
+        if ( PlayerCardsByPlayerIndex.Values.All( stack => !stack.Any() ) )
+        {
+          Console.WriteLine( "No more Cards Available" );
           break;
         }
       }
 
-      if ( FindWinner() != -1 ) {
-        Console.WriteLine( $"Player{FindWinner() + 1} Won!" );
+      if ( FindWinnerIndex() != -1 )
+      {
+        Console.WriteLine( $"Player{FindWinnerIndex() + 1} Won!" );
       }
     }
 
-    private bool IsSnap( Card currentCard ) {
-      return Pile.Contains( currentCard );
-    }
+    private void Snap( int winnerIndex )
+    {
+      Console.WriteLine( $"Player {winnerIndex + 1} Snaps the cards!" );
+      CardSet winningStack = PlayerCardsByPlayerIndex[winnerIndex];
 
-    public void Snap( int player1Index, int player2Index ) {
-      CardSet winningStack;
-      Random rng = new Random();
-      var winner = rng.Next( 0, 2 );//Good candidate to be injected in order to be testable
-      if ( winner == 0 ) {
-        Console.WriteLine( $"Player {player1Index + 1} Snaps the cards!" );
-        winningStack = PlayerCards.ElementAt( player1Index );
-      }
-      else {
-        Console.WriteLine( $"Player {player2Index + 1} Snaps the cards!" );
-        winningStack = PlayerCards.ElementAt( player2Index );
-      }
-
-      while ( Pile.Any() ) {
-        winningStack.AddToBottom( Pile.Pop() );
+      while ( CentralPile.Any() )
+      {
+        winningStack.AddToBottom( CentralPile.TakeFromTop() );
       }
     }
   }

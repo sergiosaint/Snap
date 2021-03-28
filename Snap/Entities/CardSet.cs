@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Snap.Entities {
-
-  public class CardSet {
+namespace Snap.Entities
+{
+  public class CardSet
+  {
     public List<Card> Cards { get; }
 
-    public CardSet() {
+    public CardSet()
+    {
       Cards = new List<Card>();
     }
 
-    public void Shuffle() { //Fisher-Yates shuffle, seen in stack overflow
+    public void Shuffle()
+    { //Fisher-Yates shuffle, seen in stack overflow
       Random rng = new Random();
       int n = Cards.Count;
-      while ( n > 1 ) {
+      while ( n > 1 )
+      {
         n--;
         int k = rng.Next( n + 1 );
         var value = Cards[k];
@@ -23,19 +27,24 @@ namespace Snap.Entities {
       }
     }
 
-    public void InitializeWithFullDeck() {
+    public void InitializeWithFullDeck()
+    {
       Cards.Clear();
 
-      foreach ( Suit suit in Enum.GetValues( typeof( Suit ) ) ) {
-        foreach ( Rank rank in Enum.GetValues( typeof( Rank ) ) ) {
+      foreach ( Suit suit in Enum.GetValues( typeof( Suit ) ) )
+      {
+        foreach ( Rank rank in Enum.GetValues( typeof( Rank ) ) )
+        {
           Cards.Add( new Card( suit, rank ) );
         }
       }
     }
 
-    public Card TakeFromBottom() {
+    public Card TakeFromBottom()
+    {
 
-      if ( Cards.Any() ) {
+      if ( Cards.Any() )
+      {
         var card = Cards.ElementAt( 0 );
         Cards.RemoveAt( 0 );
         return card;
@@ -44,9 +53,11 @@ namespace Snap.Entities {
       return null;
     }
 
-    public Card TakeFromTop() {
+    public Card TakeFromTop()
+    {
 
-      if ( Cards.Any() ) {
+      if ( Cards.Any() )
+      {
         var lastIndex = Cards.Count - 1;
         var card = Cards.ElementAt( lastIndex );
         Cards.RemoveAt( lastIndex );
@@ -56,11 +67,13 @@ namespace Snap.Entities {
       return null;
     }
 
-    public void AddToTop( Card card ) {
+    public void AddToTop( Card card )
+    {
       Cards.Add( card );
     }
 
-    public void AddToBottom( Card card ) {
+    public void AddToBottom( Card card )
+    {
       Cards.Insert( 0, card );
     }
 
@@ -74,5 +87,4 @@ namespace Snap.Entities {
       return Cards.Count;
     }
   }
-
 }

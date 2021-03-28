@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel;
 
-namespace Snap.Entities {
-
-  public enum Suit {
-    [Description( "C" )]
+namespace Snap.Entities
+{
+  public enum Suit
+  {
+    [Description( "♣" )]
     Clubs,
-    [Description( "S" )]
+    [Description( "♠" )]
     Spades,
-    [Description( "H" )]
+    [Description( "♥" )]
     Hearts,
-    [Description( "D" )]
+    [Description( "♦" )]
     Diamonds
   }
-
 }
