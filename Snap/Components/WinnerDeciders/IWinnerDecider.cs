@@ -1,7 +1,10 @@
-﻿namespace Snap.Components.WinnerDeciders
+﻿using System.Collections.Generic;
+using Snap.Entities;
+
+namespace Snap.Components.WinnerDeciders
 {
   public interface IWinnerDecider
   {
-    int GetWinnerIndex( int currentPlayerIndex, int numberOfPlayers );
+    Player GetSnapWinner( Player currentPlayer, Dictionary<int, Player> playersById );
   }
 }
