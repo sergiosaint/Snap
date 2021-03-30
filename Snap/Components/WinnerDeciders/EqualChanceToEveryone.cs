@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using Snap.Entities;
 
 namespace Snap.Components.WinnerDeciders
 {
   public class EqualChanceToEveryone : IWinnerDecider
   {
-    public int GetWinnerIndex( int currentPlayerIndex, int numberOfPlayers )
+    private readonly Random _random = new Random();
+
+    public Player GetSnapWinner( Player currentPlayer, Dictionary<int, Player> playersById )
     {
-      Random rng = new Random();
-      return rng.Next( 0, numberOfPlayers );
+      var numberOfPlayers = playersById.Count;
+      var winnerId = _random.Next( 1, numberOfPlayers + 1);
+      return playersById[winnerId];
     }
   }
 }

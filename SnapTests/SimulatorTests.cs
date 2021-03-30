@@ -18,9 +18,9 @@ namespace SnapTests
       var simulator = new Simulator( numOfPlayers, new EqualChanceToEveryone(), new AnyCard() );
       simulator.Deal();
 
-      foreach ( var playerCards in simulator.PlayerCardsByPlayerIndex.Values )
+      foreach ( var player in simulator.Players )
       {
-        Assert.Equal( expectedNumOfCardsPerPlayer, playerCards.Count() );
+        Assert.Equal( expectedNumOfCardsPerPlayer, player.Cards.Count() );
       }
     }
 

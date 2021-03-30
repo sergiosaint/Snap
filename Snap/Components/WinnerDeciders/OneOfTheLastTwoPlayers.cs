@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using Snap.Entities;
 
 namespace Snap.Components.WinnerDeciders
 {
   public class OneOfTheLastTwoPlayers : IWinnerDecider
   {
-    public int GetWinnerIndex( int currentPlayerIndex, int numberOfPlayers )
-    {
-      var previousPlayerIndex = currentPlayerIndex == 0 ? numberOfPlayers - 1 : currentPlayerIndex - 1;
+    private readonly Random _random = new Random();
 
-      Random rng = new Random();
-      return rng.Next( 0, 2 ) == 0 ? currentPlayerIndex : previousPlayerIndex;
+    public Player GetSnapWinner( Player currentPlayer, Dictionary<int, Player> playersById )
+    {
+      var numberOfPlayers = playersById.Count;
+      var previousPlayerId = currentPlayer.Id == 1 ? numberOfPlayers : currentPlayer.Id - 1;
+      var winnerId = _random.Next( 0, 2 ) == 0 ? currentPlayer.Id : previousPlayerId;
+      return playersById[winnerId];
     }
   }
 }
