@@ -24,11 +24,10 @@ in the next stage of the interview process.
 and the dealing of cards to the players. The aim here isn’t to provide a full test suite, but to
 demonstrate your ability to write tests. You can pick whichever unit testing framework you
 are comfortable with (NUnit, XUnit, MSpec...).
-- should, if possible, target .NET 4.5.1 and build in Visual Studio 2013*
+- should, if possible, target ~~.NET 4.5.1 and build in Visual Studio 2013~~ .NET Core 3.1 and build in Visual Studio 2019*
 
-. If it doesn’t, please
+. If it doesn’t, please indicate which version of .NET and Visual Studio you used.
 
-indicate which version of .NET and Visual Studio you used.
 - can include third-party libraries from NuGet.
 You can submit your solution via a repository of your choice (GitHub, Bitbucket, etc) or send it to us
 via email in a .zip file. We will provide you with feedback on your solution and where appropriate
